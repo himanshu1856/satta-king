@@ -1,36 +1,55 @@
 type GameResult = {
-    name: string;
-    result: string;
-    time: string;
-  };
-  
-  export default function ResultTable({ results }: { results: GameResult[] }) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">
-          Live Satta Results
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-center border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100 text-gray-700">
-                <th className="py-2 border-r">Game</th>
-                <th className="py-2 border-r">Result</th>
-                <th className="py-2">Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((item, idx) => (
-                <tr key={idx} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="py-3 font-medium text-blue-800 border-r">{item.name}</td>
-                  <td className="py-3 font-semibold text-red-600 border-r">{item.result}</td>
-                  <td className="py-3 text-sm text-gray-600">{item.time}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+  name: string;
+  time: string;
+  resultPrev: string;
+  resultCurr: string;
+  highlight?: boolean;
+};
+
+export default function ResultTable({ results }: { results: GameResult[] }) {
+  return (
+    <div className="border border-gray-400 mb-6">
+      {/* Header */}
+      <div className="bg-emerald-400 font-medium   text-xl  text-white text-center py-2">
+        Satta King Fast Results of April 07, 2025 & April 06, 2025
       </div>
-    );
-  }
-  
+
+      {/* Table header */}
+      <div className="bg-gray-800 text-white flex px-4 py-2 font-semibold text-lg">
+        <div className="w-1/2">Games List</div>
+        <div className="w-1/4 text-center">Sun. 6th</div>
+        <div className="w-1/4 text-center">Mon. 7th</div>
+      </div>
+
+      {/* Table rows */}
+      {results.map((game, idx) => (
+        <div
+          key={idx}
+          className={`flex items-center px-4 py-3 ${
+            game.highlight ? 'bg-yellow-400' : 'bg-white'
+          } border-b border-gray-300`}
+        >
+          {/* Game info */}
+          <div className="w-1/2">
+            <div className="font-bold text-gray-900">{game.name}</div>
+            <div className="text-sm text-gray-700">
+              at {game.time}{' '}
+              <a href="#" className="text-blue-600 underline ml-1 text-sm">
+                Record Chart
+              </a>
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="w-1/4 text-center text-xl font-semibold">{game.resultPrev}</div>
+          <div className="w-1/4 text-center text-xl font-semibold">{game.resultCurr}</div>
+        </div>
+      ))}
+
+      {/* Footer */}
+      <div className="bg-gray-800 text-white text-center py-2 text-lg">
+        Click here for more games results.
+      </div>
+    </div>
+  );
+}
