@@ -1,55 +1,68 @@
-type GameResult = {
+import React from "react";
+
+interface Game {
+  id: number;
   name: string;
-  time: string;
-  resultPrev: string;
-  resultCurr: string;
-  highlight?: boolean;
-};
+}
 
-export default function ResultTable({ results }: { results: GameResult[] }) {
+interface ResultMapEntry {
+  today?: string;
+  yesterday?: string;
+}
+
+interface ResultTableProps {
+  title: string;
+  games: Game[];
+  resultMap: Record<number, ResultMapEntry>;
+  todayLabel: string;
+  yesterdayLabel: string;
+}
+
+const ResultTable: React.FC<ResultTableProps> = ({
+  title,
+  games,
+  resultMap,
+  todayLabel,
+  yesterdayLabel,
+}) => {
+  if (!games || games.length === 0) {
+    return <p className="text-red-500 text-center">No game data available.</p>;
+  }
+
   return (
-    <div className="border border-gray-400 mb-6">
-      {/* Header */}
-      <div className="bg-emerald-400 font-medium   text-xl  text-white text-center py-2">
-        Satta King Fast Results of April 07, 2025 & April 06, 2025
+    <div className="border border-gray-400 rounded-md shadow-md overflow-hidden my-6">
+      <div className="bg-emerald-400 text-white text-center py-3 font-bold text-lg">
+        {title}
       </div>
+      <table className="w-full">
+        <thead className="bg-gray-800 text-white">
+          <tr>
+            <th className="py-2 px-4 text-left">Games List</th>
+            <th className="py-2 px-4 text-center">{yesterdayLabel}</th>
+            <th className="py-2 px-4 text-center">{todayLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {games.map((game) => {
+            const results = resultMap[game.id] || {};
+            const today = results.today === "-1" ? "XX" : results.today || "XX";
+            const yesterday = results.yesterday === "-1" ? "XX" : results.yesterday || "XX";
 
-      {/* Table header */}
-      <div className="bg-gray-800 text-white flex px-4 py-2 font-semibold text-lg">
-        <div className="w-1/2">Games List</div>
-        <div className="w-1/4 text-center">Sun. 6th</div>
-        <div className="w-1/4 text-center">Mon. 7th</div>
-      </div>
-
-      {/* Table rows */}
-      {results.map((game, idx) => (
-        <div
-          key={idx}
-          className={`flex items-center px-4 py-3 ${
-            game.highlight ? 'bg-yellow-400' : 'bg-white'
-          } border-b border-gray-300`}
-        >
-          {/* Game info */}
-          <div className="w-1/2">
-            <div className="font-bold text-gray-900">{game.name}</div>
-            <div className="text-sm text-gray-700">
-              at {game.time}{' '}
-              <a href="#" className="text-blue-600 underline ml-1 text-sm">
-                Record Chart
-              </a>
-            </div>
-          </div>
-
-          {/* Results */}
-          <div className="w-1/4 text-center text-xl font-semibold">{game.resultPrev}</div>
-          <div className="w-1/4 text-center text-xl font-semibold">{game.resultCurr}</div>
-        </div>
-      ))}
-
-      {/* Footer */}
-      <div className="bg-gray-800 text-white text-center py-2 text-lg">
+            return (
+              <tr key={game.id} className=" border-t border-gray-400">
+                <td className="py-2 px-4 font-semibold">{game.name}</td>
+                <td className="py-2 px-4 text-center">{yesterday}</td>
+                <td className="py-2 px-4 text-center">{today}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <div className="bg-gray-800 text-white text-center py-2 text-sm">
         Click here for more games results.
       </div>
     </div>
   );
-}
+};
+
+export default ResultTable;

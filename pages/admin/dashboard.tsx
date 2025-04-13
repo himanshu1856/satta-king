@@ -1,30 +1,31 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
+// import { formatTimeTo12Hour } from "@/utils/formatters";
+import { formatTimeTo12Hour } from "../../utils/formatters";
+
 
 export default function AdminDashboard() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        router.push("/admin/login");
-      } else {
-        fetchResults();
-      }
-    };
+  const fetchResults = async () => {
+    const { data, error } = await supabase
+      .from("results")
+      .select("id, result, game_id, date, games ( name, start_time )")
+      .order("games.start_time", { ascending: true });
 
-    const fetchResults = async () => {
-      const { data } = await supabase.from("results").select("*").order("time");
+    if (error) {
+      console.error("Failed to fetch results:", error);
+      setResults([]);
+    } else {
       setResults(data || []);
-      setLoading(false);
-    };
+    }
 
-    checkSession();
-  }, []);
+    setLoading(false);
+  };
+
 
   const handleUpdate = async (id: string, newResult: string) => {
     const { error } = await supabase
@@ -64,10 +65,10 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {results.map((game, idx) => (
+        {results.map((game) => (
           <div key={game.id} className="mb-4">
             <p className="font-medium">
-              {game.name} — {game.time}
+              {game.games.name} — {formatTimeTo12Hour(game.games.start_time)}
             </p>
             <input
               type="text"
@@ -77,6 +78,7 @@ export default function AdminDashboard() {
             />
           </div>
         ))}
+
       </div>
     </div>
   );
