@@ -1,47 +1,78 @@
+// pages/admin/dashboard.tsx
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
-// import { formatTimeTo12Hour } from "@/utils/formatters";
-import { formatTimeTo12Hour } from "../../utils/formatters";
+import { format } from "date-fns";
 
+interface Game {
+  id: number;
+  name: string;
+  start_time: string;
+}
 
 export default function AdminDashboard() {
-  const [results, setResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [games, setGames] = useState<Game[]>([]);
+  const [todayResult, setTodayResult] = useState<{ gameId: number; result: string }>({ gameId: 0, result: "" });
+  const [editDate, setEditDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const [editGameId, setEditGameId] = useState<number>(0);
+  const [editResult, setEditResult] = useState<string>("");
+  const [addGame, setAddGame] = useState<{ name: string; start_time: string }>({ name: "", start_time: "" });
+
   const router = useRouter();
 
-  const fetchResults = async () => {
-    const { data, error } = await supabase
-      .from("results")
-      .select("id, result, game_id, date, games ( name, start_time )")
-      .order("games.start_time", { ascending: true });
+  useEffect(() => {
+    fetchGames();
+  }, []);
 
+  const fetchGames = async () => {
+    const { data, error } = await supabase.from("games").select("*");
     if (error) {
-      console.error("Failed to fetch results:", error);
-      setResults([]);
+      console.error("Error fetching games:", error.message);
     } else {
-      setResults(data || []);
+      setGames(data || []);
     }
-
-    setLoading(false);
   };
 
+  const handleTodayUpdate = async () => {
+    const today = format(new Date(), "yyyy-MM-dd");
+    const { error } = await supabase.from("results").upsert({
+      game_id: todayResult.gameId,
+      date: today,
+      result: todayResult.result === "XX" ? -1 : parseInt(todayResult.result),
+    });
+    if (error) alert("Failed to update today: " + error.message);
+    else alert("✅ Updated successfully");
+  };
 
-  const handleUpdate = async (id: string, newResult: string) => {
+  const handleEditResult = async () => {
+    const { error } = await supabase.from("results").upsert({
+      game_id: editGameId,
+      date: editDate,
+      result: editResult === "XX" ? -1 : parseInt(editResult),
+    });
+    if (error) alert("Error updating result: " + error.message);
+    else alert("✅ Result updated!");
+  };
+
+  const handleDeleteResult = async () => {
+    const confirm = window.confirm("Are you sure you want to delete this result?");
+    if (!confirm) return;
     const { error } = await supabase
       .from("results")
-      .update({ result: newResult })
-      .eq("id", id);
+      .delete()
+      .eq("game_id", editGameId)
+      .eq("date", editDate);
+    if (error) alert("❌ Delete failed: " + error.message);
+    else alert("🗑️ Deleted successfully");
+  };
 
-    if (error) {
-      alert("Update failed!");
-      console.error(error);
-    } else {
-      alert("Updated!");
-      const updated = results.map((r) =>
-        r.id === id ? { ...r, result: newResult } : r
-      );
-      setResults(updated);
+  const handleAddGame = async () => {
+    const { error } = await supabase.from("games").insert(addGame);
+    if (error) alert("Failed to add game: " + error.message);
+    else {
+      alert("✅ Game added!");
+      fetchGames();
+      setAddGame({ name: "", start_time: "" });
     }
   };
 
@@ -50,36 +81,119 @@ export default function AdminDashboard() {
     router.push("/admin/login");
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
-
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-blue-700">Update Results</h2>
-          <button
-            onClick={handleLogout}
-            className="text-sm bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
+    <div className="p-6 max-w-3xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <a
+            href="/"
+            className="text-sm bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
           >
-            Logout
+            Home
+          </a>
+          <h2 className="text-xl text-center font-bold text-blue-700">Update Results</h2>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="text-sm bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
+        >
+          Logout
+        </button>
+      </div>
+
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Admin Dashboard - SATTA KING MHADEV</h1>
+        
+      </div>
+
+      {/* Section 1: Update Today's Result */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Update Today's Result</h2>
+        <div className="flex flex-col gap-2">
+          <select
+            className="border p-2 rounded"
+            onChange={(e) => setTodayResult({ ...todayResult, gameId: parseInt(e.target.value) })}
+            value={todayResult.gameId}
+          >
+            <option value="">Select Game</option>
+            {games.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+          <input
+            className="border p-2 rounded"
+            placeholder="Enter Result"
+            value={todayResult.result}
+            onChange={(e) => setTodayResult({ ...todayResult, result: e.target.value })}
+          />
+          <button onClick={handleTodayUpdate} className="bg-blue-600 text-white px-4 py-2 rounded">
+            Save
           </button>
         </div>
+      </section>
 
-        {results.map((game) => (
-          <div key={game.id} className="mb-4">
-            <p className="font-medium">
-              {game.games.name} — {formatTimeTo12Hour(game.games.start_time)}
-            </p>
-            <input
-              type="text"
-              value={game.result}
-              onChange={(e) => handleUpdate(game.id, e.target.value)}
-              className="border p-2 rounded w-full mt-1"
-            />
+      {/* Section 2: Edit Previous Records */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Update Previous Records</h2>
+        <div className="flex flex-col gap-2">
+          <input
+            type="date"
+            value={editDate}
+            onChange={(e) => setEditDate(e.target.value)}
+            className="border p-2 rounded"
+          />
+          <select
+            className="border p-2 rounded"
+            onChange={(e) => setEditGameId(parseInt(e.target.value))}
+            value={editGameId}
+          >
+            <option value="">Select Game</option>
+            {games.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+          <input
+            className="border p-2 rounded"
+            placeholder="Enter Result"
+            value={editResult}
+            onChange={(e) => setEditResult(e.target.value)}
+          />
+          <div className="flex gap-2">
+            <button onClick={handleEditResult} className="bg-green-600 text-white px-4 py-2 rounded">
+              Save
+            </button>
+            <button onClick={handleDeleteResult} className="bg-red-600 text-white px-4 py-2 rounded">
+              Delete
+            </button>
           </div>
-        ))}
+        </div>
+      </section>
 
-      </div>
+      {/* Section 3: Add New Game */}
+      <section>
+        <h2 className="text-xl font-semibold mb-2">Add New Game</h2>
+        <div className="flex flex-col gap-2">
+          <input
+            className="border p-2 rounded"
+            placeholder="Game Name"
+            value={addGame.name}
+            onChange={(e) => setAddGame({ ...addGame, name: e.target.value })}
+          />
+          <input
+            className="border p-2 rounded"
+            placeholder="Start Time (e.g., 14:30:00)"
+            value={addGame.start_time}
+            onChange={(e) => setAddGame({ ...addGame, start_time: e.target.value })}
+          />
+          <button onClick={handleAddGame} className="bg-blue-600 text-white px-4 py-2 rounded">
+            Add
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
