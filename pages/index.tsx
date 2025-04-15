@@ -39,13 +39,11 @@ export async function getServerSideProps() {
     });
   }
 
-  // Removed redundant re-declaration of formatDate
-
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
   const prevMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
   const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
-  const { data: monthlyCalendarResults, error: calendarError } = await supabase
+  const { data: monthlyCalendarResults = [], error: calendarError } = await supabase
     .from("results")
     .select("*")
     .in("game_id", [1, 2, 3, 4]) // Gali, Desawer, Faridabad, Ghaziabad
@@ -61,11 +59,21 @@ export async function getServerSideProps() {
       yesterdayFormatted: formatTitleDate(yesterday),
       todayLabel: formatLabel(today),
       yesterdayLabel: formatLabel(yesterday),
+      currentDate: today.toISOString(),
     },
   };
 }
 
-export default function Home({ games, monthlyCalendarResults, resultMap, todayFormatted, yesterdayFormatted, todayLabel, yesterdayLabel }: any) {
+export default function Home({
+  games,
+  monthlyCalendarResults,
+  resultMap,
+  todayFormatted,
+  yesterdayFormatted,
+  todayLabel,
+  yesterdayLabel,
+  currentDate,
+}: any) {
   return (
     <>
       <Head>
@@ -87,7 +95,7 @@ export default function Home({ games, monthlyCalendarResults, resultMap, todayFo
           todayLabel={todayLabel}
           yesterdayLabel={yesterdayLabel}
         />
-        <MonthlyCalendarTable results={monthlyCalendarResults} />
+        <MonthlyCalendarTable results={monthlyCalendarResults} currentDate={currentDate} />
         <HomeFooter />
       </main>
     </>

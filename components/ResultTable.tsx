@@ -3,6 +3,7 @@ import React from "react";
 interface Game {
   id: number;
   name: string;
+  start_time: string;
 }
 
 interface ResultMapEntry {
@@ -50,7 +51,19 @@ const ResultTable: React.FC<ResultTableProps> = ({
 
             return (
               <tr key={game.id} className=" border-t border-gray-400">
-                <td className="py-2 px-4 font-semibold">{game.name}</td>
+                <td className="text-center py-2 px-4 text-start">
+                  <div className="text-black font-semibold uppercase">{game.name}</div>
+                  <div className="text-sm text-gray-600">
+                    at {game.start_time}{" "}
+                    <a
+                      href={`/record/${game.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      className="text-blue-600 hover:underline ml-1"
+                    >
+                      Record Chart
+                    </a>
+                  </div>
+                </td>
+
                 <td className="py-2 px-4 text-center">{yesterday}</td>
                 <td className="py-2 px-4 text-center">{today}</td>
               </tr>

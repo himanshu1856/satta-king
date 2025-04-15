@@ -9,6 +9,7 @@ interface ResultRow {
 
 interface CalendarProps {
   results: ResultRow[];
+  currentDate: Date;
 }
 
 const GAMES = [
