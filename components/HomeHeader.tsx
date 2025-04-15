@@ -38,7 +38,7 @@ const HeaderHeader = () => {
           हमसे संपर्क करने के लिए
         </p>
         <span className="inline-block bg-blue-600 text-white px-2 py-1 text-sm rounded-sm mr-2">➠</span>
-        <a href="#" className="text-blue-700 underline text-sm">
+        <a rel="noopener noreferrer" target="blank" href="https://docs.google.com/forms/d/e/1FAIpQLScvhyRrzCbW2nGY2MODdOlpNbuXGWvPiEiidKVMWJgondTqSA/viewform?usp=sharing" className="text-blue-700 underline text-sm">
           यहाँ क्लिक करें
         </a>
       </div>

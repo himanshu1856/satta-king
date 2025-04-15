@@ -54,6 +54,20 @@ const FooterFilter = () => {
           </button>
         </div>
       </div>
+
+      <a
+        href="https://wa.me/919813260875" // replace with your number
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-4 right-4 z-50"
+      >
+        <img
+          src="/whatsapp-icon.png" // make sure the icon is in /public folder
+          alt="Chat on WhatsApp"
+          className="w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-transform duration-200"
+        />
+      </a>
+
     </div>
   );
 };
