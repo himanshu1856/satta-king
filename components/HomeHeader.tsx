@@ -4,6 +4,7 @@ const HeaderHeader = () => {
       {/* Logo + Title */}
       <div className="flex flex-col items-center justify-center space-y-2">
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide">
+          <img src="/shiva.png" alt="Satta King Mhadev"  className="w-10 h-10 hover:scale-110 transition-transform duration-200 inline me-2" />
           <span className="text-black">SATTA-</span>
           <span className="text-gray-900">KING-</span>
           <span className="text-black">MHADEV</span>

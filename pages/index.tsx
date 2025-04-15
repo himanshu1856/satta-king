@@ -77,7 +77,7 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>Satta King - Fast Results</title>
+        <title>Satta King Mhadev Results</title>
       </Head>
       <main className="max-w-4xl mx-auto px-4 py-8">
         <HomeHeader />
