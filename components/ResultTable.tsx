@@ -1,4 +1,6 @@
 import React from "react";
+import { formatTimeTo12Hour } from "@/utils/formatters";
+
 
 interface Game {
   id: number;
@@ -51,10 +53,10 @@ const ResultTable: React.FC<ResultTableProps> = ({
 
             return (
               <tr key={game.id} className=" border-t border-gray-400">
-                <td className="text-center py-2 px-4 text-start">
+                <td className="py-2 px-4 text-start">
                   <div className="text-black font-semibold uppercase">{game.name}</div>
                   <div className="text-sm text-gray-600">
-                    at {game.start_time}{" "}
+                    at {formatTimeTo12Hour(game.start_time)}{" "}
                     <a
                       href={`/record/${game.name.toLowerCase().replace(/\s+/g, "-")}`}
                       className="text-blue-600 hover:underline ml-1"
