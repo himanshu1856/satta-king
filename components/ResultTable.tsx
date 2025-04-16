@@ -1,16 +1,15 @@
 import React from "react";
 import { formatTimeTo12Hour } from "@/utils/formatters";
 
-
 interface Game {
-  id: number;
+  game_id: number;
   name: string;
   start_time: string;
 }
 
 interface ResultMapEntry {
-  today?: string;
-  yesterday?: string;
+  today?: string | number;
+  yesterday?: string | number;
 }
 
 interface ResultTableProps {
@@ -47,12 +46,17 @@ const ResultTable: React.FC<ResultTableProps> = ({
         </thead>
         <tbody>
           {games.map((game) => {
-            const results = resultMap[game.id] || {};
-            const today = results.today === "-1" ? "XX" : results.today || "XX";
-            const yesterday = results.yesterday === "-1" ? "XX" : results.yesterday || "XX";
+            const gameId = game.game_id ?? game.game_id;
+            if (!gameId) return null;
+
+            const result = resultMap[gameId] || {};
+            const toVal = (val: any) => val === -1 || val === "-1" || val == null ? "XX" : val.toString();
+
+            const today = toVal(result.today);
+            const yesterday = toVal(result.yesterday);
 
             return (
-              <tr key={game.id} className=" border-t border-gray-400">
+              <tr key={`game-${gameId}`} className="border-t border-gray-400">
                 <td className="py-2 px-4 text-start">
                   <div className="text-black font-semibold uppercase">{game.name}</div>
                   <div className="text-sm text-gray-600">
@@ -65,10 +69,10 @@ const ResultTable: React.FC<ResultTableProps> = ({
                     </a>
                   </div>
                 </td>
-
-                <td className="py-2 px-4 text-center">{yesterday}</td>
-                <td className="py-2 px-4 text-center">{today}</td>
+                <td className="text-center font-bold">{yesterday}</td>
+                <td className="text-center font-bold">{today}</td>
               </tr>
+
             );
           })}
         </tbody>

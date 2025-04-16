@@ -1,4 +1,7 @@
 // pages/index.tsx
+
+"use client"
+
 import Head from "next/head";
 import ResultTable from "@/components/ResultTable";
 import HomeHeader from "@/components/HomeHeader";
@@ -6,6 +9,7 @@ import HomeFooter from "@/components/HomeFooter";
 import { createClient } from "@supabase/supabase-js";
 import { format } from "date-fns";
 import MonthlyCalendarTable from "@/components/MonthlyCalendarTable";
+import StaticInfo from "@/components/StaticInfo";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,10 +36,10 @@ export async function getServerSideProps() {
   const resultMap: Record<number, { today?: string; yesterday?: string }> = {};
   if (results) {
     results.forEach((row) => {
+      const val = row.result === null || row.result === -1 ? "XX" : String(row.result);
       if (!resultMap[row.game_id]) resultMap[row.game_id] = {};
-      const value = row.result === null || row.result === -1 ? "XX" : String(row.result);
-      if (row.date === todayStr) resultMap[row.game_id].today = value;
-      if (row.date === yesterdayStr) resultMap[row.game_id].yesterday = value;
+      if (row.date === todayStr) resultMap[row.game_id].today = val;
+      if (row.date === yesterdayStr) resultMap[row.game_id].yesterday = val;
     });
   }
 
@@ -43,12 +47,12 @@ export async function getServerSideProps() {
   const prevMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
   const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
-  const { data: monthlyCalendarResults = [], error: calendarError } = await supabase
+  const { data: monthlyCalendarResults = [] } = await supabase
     .from("results")
     .select("*")
-    .in("game_id", [1, 2, 3, 4]) // Gali, Desawer, Faridabad, Ghaziabad
+    .in("game_id", [1, 2, 3, 4])
     .gte("date", formatDate(prevMonthStart))
-    .lt("date", formatDate(nextMonthStart)); // Up to the start of next month
+    .lt("date", formatDate(nextMonthStart));
 
   return {
     props: {
@@ -66,8 +70,8 @@ export async function getServerSideProps() {
 
 export default function Home({
   games,
-  monthlyCalendarResults,
   resultMap,
+  monthlyCalendarResults,
   todayFormatted,
   yesterdayFormatted,
   todayLabel,
@@ -97,6 +101,7 @@ export default function Home({
         />
         <MonthlyCalendarTable results={monthlyCalendarResults} currentDate={currentDate} />
         <HomeFooter />
+        <StaticInfo />
       </main>
     </>
   );
