@@ -62,7 +62,7 @@ const ResultTable: React.FC<ResultTableProps> = ({
                   <div className="text-sm text-gray-600">
                     at {formatTimeTo12Hour(game.start_time)}{" "}
                     <a
-                      href={`/record/${game.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      href={`/record/${game.game_id}`}
                       className="text-blue-600 hover:underline ml-1"
                     >
                       Record Chart
