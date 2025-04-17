@@ -47,10 +47,13 @@ export async function getServerSideProps() {
   const prevMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
   const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
+  const allGameIds = (games || []).map((g) => g.game_id);
+
+
   const { data: monthlyCalendarResults = [] } = await supabase
     .from("results")
     .select("*")
-    .in("game_id", [1, 2, 3, 4])
+    .in("game_id", allGameIds)
     .gte("date", formatDate(prevMonthStart))
     .lt("date", formatDate(nextMonthStart));
 
