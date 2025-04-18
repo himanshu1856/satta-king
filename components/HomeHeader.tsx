@@ -1,3 +1,5 @@
+import LiveClock from "./LiveClock";
+
 const HeaderHeader = () => {
   return (
     <div className="text-center p-4 space-y-3">
@@ -46,7 +48,7 @@ const HeaderHeader = () => {
 
       {/* Date line */}
       <p className="text-green-600 text-sm pt-2">
-        Updated: April 07, 2025, 17:20:51 IST.
+        {<LiveClock/>}
       </p>
     </div>
   );
