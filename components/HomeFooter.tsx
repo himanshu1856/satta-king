@@ -59,7 +59,7 @@ const FooterFilter = () => {
         href="https://wa.me/919813260875" // replace with your number
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 z-50"
+        className="fixed bottom-4 right-9 z-50"
       >
         <img
           src="/whatsapp-icon.png" // make sure the icon is in /public folder

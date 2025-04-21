@@ -84,7 +84,9 @@ export default function Home({
   return (
     <>
       <Head>
-        <link rel="icon" href="../public/favicon.ico" />
+        <link rel="icon" href="/public/favicon.ico" sizes="any"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
         <title>Satta King Mhadev Results</title>
       </Head>
       <main className="max-w-4xl mx-auto px-4 py-8">
