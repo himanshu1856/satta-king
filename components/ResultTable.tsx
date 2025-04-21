@@ -7,6 +7,16 @@ interface Game {
   start_time: string;
 }
 
+const YellowGames: string[] = [
+  'Barlin Day',
+  'Delhi Bazar',
+  'Shri Ganesh',
+  'Gali',
+  'Desawer',
+  'Faridabad',
+  'Ghaziabad',
+]
+
 interface ResultMapEntry {
   today?: string | number;
   yesterday?: string | number;
@@ -56,14 +66,14 @@ const ResultTable: React.FC<ResultTableProps> = ({
             const yesterday = toVal(result.yesterday);
 
             return (
-              <tr key={`game-${gameId}`} className="border-t border-gray-400">
+              <tr key={`game-${gameId}`} className={`border-t border-gray-400 ${YellowGames.includes(game.name) ? 'bg-yellow-400' : ''}`}>
                 <td className="py-2 px-4 text-start">
                   <div className="text-black font-semibold uppercase">{game.name}</div>
                   <div className="text-sm text-gray-600">
                     at {formatTimeTo12Hour(game.start_time)}{" "}
                     <a
                       href={`/record/${game.game_id}`}
-                      className="text-blue-600 hover:underline ml-1"
+                      className={`text-blue-600 hover:underline ml-1 ${YellowGames.includes(game.name) ? 'text-black' : ''}`}
                     >
                       Record Chart
                     </a>

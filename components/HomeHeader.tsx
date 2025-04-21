@@ -47,9 +47,9 @@ const HeaderHeader = () => {
       </div>
 
       {/* Date line */}
-      <p className="text-green-600 text-sm pt-2">
+      <div className="text-green-600 text-sm pt-2">
         {<LiveClock/>}
-      </p>
+      </div>
     </div>
   );
 };

@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 
 const getISTTime = () => {
   const now = new Date();
-  const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+  const istOffset = 5.5 * 60 * 60 * 1000;
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  const istTime = new Date(utc + istOffset);
-  return istTime;
+  return new Date(utc + istOffset);
 };
 
 const formatDate = (date: Date) => {
@@ -27,15 +26,16 @@ const formatTime = (date: Date) => {
 };
 
 export default function LiveClock() {
-  const [time, setTime] = useState(getISTTime());
+  const [time, setTime] = useState<Date | null>(null);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(getISTTime());
-    }, 1000);
-
-    return () => clearInterval(timer); // Cleanup on unmount
+    const updateTime = () => setTime(getISTTime());
+    updateTime(); // initial call
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
   }, []);
+
+  if (!time) return null; // ⛔️ Don't render until client is ready
 
   return (
     <div className="text-center text-lg font-mono p-4 bg-white shadow rounded">
