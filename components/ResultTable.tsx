@@ -1,6 +1,8 @@
 import React from "react";
 import { formatTimeTo12Hour } from "@/utils/formatters";
 
+import { resultFormatter } from "@/utils/resultFormatter";
+
 interface Game {
   game_id: number;
   name: string;
@@ -79,8 +81,8 @@ const ResultTable: React.FC<ResultTableProps> = ({
                     </a>
                   </div>
                 </td>
-                <td className="text-center font-bold">{yesterday}</td>
-                <td className="text-center font-bold">{today}</td>
+                <td className="text-center font-bold">{resultFormatter(yesterday)}</td>
+                <td className="text-center font-bold">{resultFormatter(today)}</td>
               </tr>
 
             );
