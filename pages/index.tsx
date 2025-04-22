@@ -1,6 +1,6 @@
 // pages/index.tsx
 
-"use client"
+"use client";
 
 import Head from "next/head";
 import ResultTable from "@/components/ResultTable";
@@ -26,7 +26,11 @@ export async function getServerSideProps() {
   const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
   const istTime = new Date(now.getTime() + istOffset);
 
-  const today = new Date(istTime.getFullYear(), istTime.getMonth(), istTime.getDate());
+  const today = new Date(
+    istTime.getFullYear(),
+    istTime.getMonth(),
+    istTime.getDate()
+  );
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
@@ -41,7 +45,8 @@ export async function getServerSideProps() {
   const resultMap: Record<number, { today?: string; yesterday?: string }> = {};
   if (results) {
     results.forEach((row) => {
-      const val = row.result === null || row.result === -1 ? "XX" : String(row.result);
+      const val =
+        row.result === null || row.result === -1 ? "XX" : String(row.result);
       if (!resultMap[row.game_id]) resultMap[row.game_id] = {};
       if (row.date === todayStr) resultMap[row.game_id].today = val;
       if (row.date === yesterdayStr) resultMap[row.game_id].yesterday = val;
@@ -88,7 +93,10 @@ export default function Home({
   return (
     <>
       <Head>
-        <link rel="icon" href="/public/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>Satta King Mhadev Results</title>
@@ -109,7 +117,10 @@ export default function Home({
           todayLabel={todayLabel}
           yesterdayLabel={yesterdayLabel}
         />
-        <MonthlyCalendarTable results={monthlyCalendarResults} currentDate={currentDate} />
+        <MonthlyCalendarTable
+          results={monthlyCalendarResults}
+          currentDate={currentDate}
+        />
         <HomeFooter />
         <StaticInfo />
       </main>
