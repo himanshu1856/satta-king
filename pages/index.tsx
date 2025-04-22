@@ -21,8 +21,13 @@ const formatLabel = (date: Date) => format(date, "EEE. do");
 const formatTitleDate = (date: Date) => format(date, "MMMM dd, yyyy");
 
 export async function getServerSideProps() {
-  const today = new Date();
-  const yesterday = new Date();
+  // Convert server time to IST (UTC+5:30)
+  const now = new Date();
+  const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+  const istTime = new Date(now.getTime() + istOffset);
+
+  const today = new Date(istTime.getFullYear(), istTime.getMonth(), istTime.getDate());
+  const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
   const todayStr = formatDate(today);
@@ -48,7 +53,6 @@ export async function getServerSideProps() {
   const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
   const allGameIds = (games || []).map((g) => g.game_id);
-
 
   const { data: monthlyCalendarResults = [] } = await supabase
     .from("results")
@@ -84,8 +88,8 @@ export default function Home({
   return (
     <>
       <Head>
-        <link rel="icon" href="/public/favicon.ico" sizes="any"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="/public/favicon.ico" sizes="any" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>Satta King Mhadev Results</title>
       </Head>
