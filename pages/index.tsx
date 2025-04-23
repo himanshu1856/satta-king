@@ -94,9 +94,9 @@ export default function Home({
     <>
       <Head>
         <link rel="icon" href="/shiv.png" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/shiva.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/shiva.png"></link>
-        <link rel="apple-touch-icon" sizes="180x180" href="/shiva.png"></link>
+        <link rel="icon" type="image/png" sizes="32x32" href="/shiv.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/shiv.png"></link>
+        <link rel="apple-touch-icon" sizes="180x180" href="/shiv.png"></link>
         <link rel="apple-touch-icon" href="/shiva.png" />
         <link rel="manifest" href="/site.webmanifest"></link>
 
