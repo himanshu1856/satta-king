@@ -93,7 +93,7 @@ export default function Home({
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon-v2.ico" sizes="any" />
+        <link rel="icon" href="/shiv.png" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
 
