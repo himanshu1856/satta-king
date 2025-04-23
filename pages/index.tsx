@@ -94,8 +94,8 @@ export default function Home({
     <>
       <Head>
         <link rel="icon" href="/shiv.png" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/shiva.png" />
+        <link rel="apple-touch-icon" href="/shiva.png" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
