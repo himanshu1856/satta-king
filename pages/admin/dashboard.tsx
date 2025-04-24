@@ -11,13 +11,43 @@ interface Game {
 
 export default function AdminDashboard() {
   const [games, setGames] = useState<Game[]>([]);
-  const [todayResult, setTodayResult] = useState<{ gameId: number | null; result: string }>({ gameId: null, result: "" });
-  const [editDate, setEditDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const [todayResult, setTodayResult] = useState<{
+    gameId: number | null;
+    result: string;
+  }>({ gameId: null, result: "" });
+  const [editDate, setEditDate] = useState<string>(
+    format(new Date(), "yyyy-MM-dd")
+  );
   const [editGameId, setEditGameId] = useState<number | null>(null);
   const [editResult, setEditResult] = useState<string>("");
-  const [addGame, setAddGame] = useState<{ name: string; start_time: string }>({ name: "", start_time: "" });
+  const [addGame, setAddGame] = useState<{ name: string; start_time: string }>({
+    name: "",
+    start_time: "",
+  });
+  const [editTimeGameId, setEditTimeGameId] = useState<number | null>(null);
+  const [newStartTime, setNewStartTime] = useState<string>("");
 
   const router = useRouter();
+
+  const handleUpdateGameTime = async () => {
+    if (!editTimeGameId || !newStartTime.trim()) {
+      alert("Please select a game and enter a new start time.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("games")
+      .update({ start_time: newStartTime })
+      .eq("game_id", editTimeGameId);
+
+    if (error) alert("Error updating game time: " + error.message);
+    else {
+      alert("✅ Game time updated!");
+      fetchGames(); // Refresh game list
+      setEditTimeGameId(null); // Reset
+      setNewStartTime("");
+    }
+  };
 
   useEffect(() => {
     fetchGames();
@@ -72,7 +102,9 @@ export default function AdminDashboard() {
       return;
     }
 
-    const confirm = window.confirm("Are you sure you want to delete this result?");
+    const confirm = window.confirm(
+      "Are you sure you want to delete this result?"
+    );
     if (!confirm) return;
 
     const { error } = await supabase
@@ -115,7 +147,9 @@ export default function AdminDashboard() {
           >
             Home
           </a>
-          <h2 className="text-xl text-center font-bold text-blue-700">Update Results</h2>
+          <h2 className="text-xl text-center font-bold text-blue-700">
+            Update Results
+          </h2>
         </div>
         <button
           onClick={handleLogout}
@@ -126,7 +160,9 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Admin Dashboard - SATTA KING MHADEV</h1>
+        <h1 className="text-2xl font-bold">
+          Admin Dashboard - SATTA KING MHADEV
+        </h1>
       </div>
 
       {/* Section 1: Update Today's Result */}
@@ -136,7 +172,10 @@ export default function AdminDashboard() {
           <select
             className="border p-2 rounded"
             onChange={(e) =>
-              setTodayResult({ ...todayResult, gameId: parseInt(e.target.value) || null })
+              setTodayResult({
+                ...todayResult,
+                gameId: parseInt(e.target.value) || null,
+              })
             }
             value={todayResult.gameId ?? ""}
           >
@@ -155,7 +194,10 @@ export default function AdminDashboard() {
               setTodayResult({ ...todayResult, result: e.target.value })
             }
           />
-          <button onClick={handleTodayUpdate} className="bg-blue-600 text-white px-4 py-2 rounded">
+          <button
+            onClick={handleTodayUpdate}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
             Save
           </button>
         </div>
@@ -190,10 +232,16 @@ export default function AdminDashboard() {
             onChange={(e) => setEditResult(e.target.value)}
           />
           <div className="flex gap-2">
-            <button onClick={handleEditResult} className="bg-green-600 text-white px-4 py-2 rounded">
+            <button
+              onClick={handleEditResult}
+              className="bg-green-600 text-white px-4 py-2 rounded"
+            >
               Save
             </button>
-            <button onClick={handleDeleteResult} className="bg-red-600 text-white px-4 py-2 rounded">
+            <button
+              onClick={handleDeleteResult}
+              className="bg-red-600 text-white px-4 py-2 rounded"
+            >
               Delete
             </button>
           </div>
@@ -201,7 +249,7 @@ export default function AdminDashboard() {
       </section>
 
       {/* Section 3: Add New Game */}
-      <section>
+      <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Add New Game</h2>
         <div className="flex flex-col gap-2">
           <input
@@ -214,10 +262,47 @@ export default function AdminDashboard() {
             className="border p-2 rounded"
             placeholder="Start Time (e.g., 14:30:00)"
             value={addGame.start_time}
-            onChange={(e) => setAddGame({ ...addGame, start_time: e.target.value })}
+            onChange={(e) =>
+              setAddGame({ ...addGame, start_time: e.target.value })
+            }
           />
-          <button onClick={handleAddGame} className="bg-blue-600 text-white px-4 py-2 rounded">
+          <button
+            onClick={handleAddGame}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
             Add
+          </button>
+        </div>
+      </section>
+      {/* Section 4: Update Game Time */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Update Game Time</h2>
+        <div className="flex flex-col gap-2">
+          <select
+            className="border p-2 rounded"
+            onChange={(e) =>
+              setEditTimeGameId(parseInt(e.target.value) || null)
+            }
+            value={editTimeGameId ?? ""}
+          >
+            <option value="">Select Game</option>
+            {games.map((g) => (
+              <option key={g.game_id} value={g.game_id.toString()}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="time"
+            className="border p-2 rounded"
+            value={newStartTime}
+            onChange={(e) => setNewStartTime(e.target.value)}
+          />
+          <button
+            onClick={handleUpdateGameTime}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Update Time
           </button>
         </div>
       </section>
