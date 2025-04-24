@@ -93,13 +93,11 @@ export default function Home({
   return (
     <>
       <Head>
-        <link rel="icon" href="/shiv.png" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/shiv.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/shiv.png"></link>
-        <link rel="apple-touch-icon" sizes="180x180" href="/shiv.png"></link>
-        <link rel="apple-touch-icon" href="/shiva.png" />
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png"></link>
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png"></link>
         <link rel="manifest" href="/site.webmanifest"></link>
-
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>Satta King Mhadev Results</title>
