@@ -97,7 +97,7 @@ export default function Home({
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon16.png"></link>
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png"></link>
-        <link rel="manifest" href="/site.webmanifest"></link>
+        {/* <link rel="manifest" href="/site.webmanifest"></link> */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>Satta King Mhadev Results</title>
