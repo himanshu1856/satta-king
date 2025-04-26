@@ -1,5 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { format, subMonths, addMonths, isSameMonth } from "date-fns";
+
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 
 interface ResultRow {
   date: string; // YYYY-MM-DD
@@ -8,7 +16,6 @@ interface ResultRow {
 }
 
 interface CalendarProps {
-  results: ResultRow[];
   currentDate: Date;
 }
 
@@ -27,8 +34,33 @@ const ALL_GAMES = [
   { id: 12, name: "Shri Ganesh" },
 ];
 
-const MonthlyResultCalendar: React.FC<CalendarProps> = ({ results }) => {
+const MonthlyResultCalendar: React.FC<CalendarProps> = () => {
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [results, setResults] = useState<ResultRow[]>([]);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const nextMonthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+  
+      const { data, error } = await supabase
+        .from("results")
+        .select("*")
+        .gte("date", format(monthStart, "yyyy-MM-dd"))
+        .lt("date", format(nextMonthStart, "yyyy-MM-dd"));
+  
+      if (error) {
+        console.error("Error fetching results:", error);
+      } else {
+        setResults(data || []);
+      }
+    };
+  
+    fetchResults();
+  }, [currentMonth]);
+  
+
   const isCurrentMonth = isSameMonth(currentMonth, new Date());
 
   const daysInMonth = new Date(

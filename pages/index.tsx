@@ -131,7 +131,7 @@ export default function Home({
           yesterdayLabel={yesterdayLabel}
         />
         <MonthlyCalendarTable
-          results={monthlyCalendarResults}
+          // results={monthlyCalendarResults}
           currentDate={currentDate}
         />
         <HomeFooter />
