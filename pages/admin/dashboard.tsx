@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   });
   const [editTimeGameId, setEditTimeGameId] = useState<number | null>(null);
   const [newStartTime, setNewStartTime] = useState<string>("");
+  const [deleteGameId, setDeleteGameId] = useState<number | null>(null);
 
   const router = useRouter();
 
@@ -34,6 +35,26 @@ export default function AdminDashboard() {
       alert("Please select a game and enter a new start time.");
       return;
     }
+
+
+    const handleDeleteGame = async () => {
+      if (!deleteGameId) {
+        alert("Please select a game to delete.");
+        return;
+      }
+  
+      const confirm = window.confirm("Are you sure you want to delete this game?");
+      if (!confirm) return;
+  
+      const { error } = await supabase.from("games").delete().eq("game_id", deleteGameId);
+      if (error) alert("❌ Delete game failed: " + error.message);
+      else {
+        alert("🗑️ Game deleted successfully");
+        fetchGames();
+        setDeleteGameId(null);
+      }
+    };
+  
 
     const { error } = await supabase
       .from("games")
@@ -60,6 +81,24 @@ export default function AdminDashboard() {
     } else {
       setGames(data || []);
       console.log("Fetched games:", data); // helpful for debugging
+    }
+  };
+
+  const handleDeleteGame = async () => {
+    if (!deleteGameId) {
+      alert("Please select a game to delete.");
+      return;
+    }
+
+    const confirm = window.confirm("Are you sure you want to delete this game?");
+    if (!confirm) return;
+
+    const { error } = await supabase.from("games").delete().eq("game_id", deleteGameId);
+    if (error) alert("❌ Delete game failed: " + error.message);
+    else {
+      alert("🗑️ Game deleted successfully");
+      fetchGames();
+      setDeleteGameId(null);
     }
   };
 
@@ -304,6 +343,17 @@ export default function AdminDashboard() {
           >
             Update Time
           </button>
+        </div>
+      </section>
+      {/* Section 5: Delete Game */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Delete Game</h2>
+        <div className="flex flex-col gap-2">
+          <select className="border p-2 rounded" onChange={(e) => setDeleteGameId(parseInt(e.target.value) || null)} value={deleteGameId ?? ""}>
+            <option value="">Select Game to Delete</option>
+            {games.map((g) => (<option key={g.game_id} value={g.game_id.toString()}>{g.name}</option>))}
+          </select>
+          <button onClick={handleDeleteGame} className="bg-red-600 text-white px-4 py-2 rounded">Delete Game</button>
         </div>
       </section>
     </div>
